@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum, ForeignKey, BigInteger, TIMESTAMP, DATETIME
+from sqlalchemy import Column, String, Enum, ForeignKey, BigInteger, TIMESTAMP
 from sqlalchemy.orm import relationship
 from database import MySQLConnection
 
