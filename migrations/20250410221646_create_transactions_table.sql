@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     sender_account_id BIGINT NOT NULL,
     receiver_account_id BIGINT,
     amount BIGINT NOT NULL,
-    type ENUM('deposit', 'withdraw', 'transfer') NOT NULL,
+    transaction_type ENUM('deposit', 'withdraw', 'transfer') NOT NULL,
     date_time TIMESTAMP NOT NULL,
     remark VARCHAR(255) NOT NULL,
     status ENUM('Completed', 'Failed', 'Pending'),

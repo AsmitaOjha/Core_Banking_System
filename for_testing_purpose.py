@@ -1,17 +1,11 @@
-def process_items(items: list[str]):
-    for item in items:
-        print(item.capitalize)
+from fastapi import FastAPI
 
-def process_items(items_t: tuple[int, int, str], items_s: set[bytes]):
-    return items_t, items_s
+app = FASTAPI()
 
-def process_items(prices: dict[str, float]):
-    for item_name, item_price in prices.items():
-        print(item_name)
-        print(item_price)
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
 
-def say_hi(name: str | None = None):
-    if name is not None:
-        print(f"Hey {name}!")
-    else:
-        print("Hello World")
+@app.get("/users/{user_id}")
+def read_user(user_id: int):
+    return{"user_id": user_id}

@@ -28,3 +28,10 @@ class MySQLConnection:
     engine = engine
     SessionLocal = SessionLocal
     Base = Base
+
+def get_db():
+    db = MySQLConnection.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

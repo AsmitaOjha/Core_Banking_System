@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, Date, DateTime
+from sqlalchemy import Column, BigInteger, String, Date
 from sqlalchemy.orm import relationship
 from database import MySQLConnection
 from pydantic import BaseModel, EmailStr
@@ -10,14 +10,16 @@ class User(MySQLConnection.Base):
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
     date_of_birth = Column(Date, nullable=False)
-    gender = Column(String(10), nullable=False)  # Ensuring correct length
-    phone_number = Column(String(20), nullable=False)  # Ensuring correct length
-    email = Column(String(255), nullable=False, unique=True)  # Adding unique constraint
+    gender = Column(String(10), nullable=False)
+    phone_number = Column(String(20), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     city = Column(String(255), nullable=False)
     state = Column(String(255), nullable=False)
     country = Column(String(255), nullable=False)
-   # accounts = relationship("Account", back_populates='user')
+
+    # ✅ Match this with `back_populates="user"` in Account
+    accounts = relationship("Account", back_populates='user')
 
 class UserCreate(BaseModel):
     name: str
