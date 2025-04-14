@@ -35,7 +35,7 @@ def create_account(db: Session, account_data: AccountCreate):
         created_at=datetime.now(),
         closed_at=None,
         user_id=account_data.user_id,
-        transaction_id=None  # Assuming optional for now
+       
     )
 
     db.add(new_account)

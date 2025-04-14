@@ -5,37 +5,53 @@ from account.account_schema import Account
 from decimal import Decimal
 
 def create_transaction(db: Session, transaction_data: TransactionCreate):
-    # Check if account exists
-    account = db.query(Account).filter(Account.account_number == transaction_data.account_number).first()
-    if not account:
-        raise HTTPException(status_code=404, detail="Account not found.")
+    # Step 1: Fetch sender account
+    sender = db.query(Account).filter(
+        Account.account_number == transaction_data.sender_account_id
+    ).first()
+
+    if not sender:
+        raise HTTPException(status_code=404, detail="Sender account not found.")
 
     amount = Decimal(transaction_data.amount)
 
-    # Handle business logic
-    if transaction_data.transaction_type == "Withdrawal" and account.account_balance < amount:
-        raise HTTPException(status_code=400, detail="Insufficient balance.")
+    # Step 2: Handle transaction types
+    if transaction_data.transaction_type == "deposit":
+        sender.account_balance += amount
 
-    # Update account balance
-    if transaction_data.transaction_type == "Deposit":
-        account.account_balance += amount
-    elif transaction_data.transaction_type == "Withdrawal":
-        account.account_balance -= amount
-    elif transaction_data.transaction_type == "Transfer":
-        # You can add logic here to debit from one and credit to another
-        pass
-    elif transaction_data.transaction_type == "Payment":
-        account.account_balance -= amount
+    elif transaction_data.transaction_type == "withdraw":
+        if sender.account_balance < amount:
+            raise HTTPException(status_code=400, detail="Insufficient balance.")
+        sender.account_balance -= amount
 
-    # Create transaction record
+    elif transaction_data.transaction_type in ["transfer", "payment"]:
+        if sender.account_balance < amount:
+            raise HTTPException(status_code=400, detail="Insufficient balance.")
+        sender.account_balance -= amount
+
+        receiver = db.query(Account).filter(
+            Account.account_number == transaction_data.receiver_account_id
+        ).first()
+
+        if not receiver:
+            raise HTTPException(status_code=404, detail="Receiver account not found.")
+
+        receiver.account_balance += amount
+        db.add(receiver)
+
+    # Step 3: Create transaction record
     transaction = Transaction(
         transaction_type=transaction_data.transaction_type,
         amount=amount,
-        description=transaction_data.description,
-        account_number=transaction_data.account_number
+        remark=transaction_data.remark,
+        status=transaction_data.status,
+        sender_account_id=transaction_data.sender_account_id,
+        receiver_account_id=transaction_data.receiver_account_id
     )
 
+    db.add(sender)
     db.add(transaction)
     db.commit()
     db.refresh(transaction)
+
     return transaction

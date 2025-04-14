@@ -1,6 +1,9 @@
 from user.user_schema import User, UserCreate
 from sqlalchemy.orm import Session
 
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
 def create_user(user_data: UserCreate, db: Session):
     new_user = User(
         name= user_data.name,

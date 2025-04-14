@@ -9,25 +9,28 @@ class Transaction(MySQLConnection.Base):
     __tablename__ = "transactions"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    transaction_type = Column(Enum("Deposit", "Withdrawal", "Transfer", "Payment"), nullable=False)
+    transaction_type = Column(Enum("deposit", "withdraw", "transfer"), nullable=False)
     amount = Column(DECIMAL(10, 2), nullable=False)
     transaction_time = Column(DateTime, nullable=False, default=func.now())
-    description = Column(String(255), nullable=True)
-    
-    # Foreign key to account
-    account_number = Column(String(20), ForeignKey('accounts.account_number', ondelete='CASCADE'), nullable=False)
+    remark = Column(String(255), nullable=False)  # match SQL NOT NULL
+    status = Column(Enum("Completed", "Failed", "Pending"), nullable=True)
 
-    # Relationship to Account
-    accounts = relationship("Account", back_populates="transactions")
+    # Foreign Keys to accounts table
+    sender_account_id = Column(String, ForeignKey('accounts.account_number', ondelete='CASCADE'), nullable=False)
+    receiver_account_id = Column(String, ForeignKey('accounts.account_number', ondelete='CASCADE'), nullable=True)
 
+    # Relationships
+    sender_account = relationship("Account", foreign_keys=[sender_account_id])
+    receiver_account = relationship("Account", foreign_keys=[receiver_account_id])
 
 # Pydantic Input Model
 class TransactionCreate(BaseModel):
-    transaction_type: Literal["Deposit", "Withdrawal", "Transfer", "Payment"]
+    transaction_type: Literal["deposit", "withdraw", "transfer"]
     amount: float
-    description: Optional[str]
-    account_number: str
-
+    remark: str
+    status: Optional[Literal["Completed", "Failed", "Pending"]] = "Completed"
+    sender_account_id: str
+    receiver_account_id: Optional[str] = None
 
 # Pydantic Output Model
 class TransactionOut(BaseModel):
@@ -35,8 +38,10 @@ class TransactionOut(BaseModel):
     transaction_type: str
     amount: float
     transaction_time: datetime
-    description: Optional[str]
-    account_number: str
+    remark: str
+    status: Optional[str]
+    sender_account_id: str
+    receiver_account_id: Optional[str]
 
     class Config:
         from_attributes = True

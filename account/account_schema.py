@@ -18,11 +18,15 @@ class Account(MySQLConnection.Base):
 
     # Foreign keys
     user_id = Column(BigInteger, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    transaction_id = Column(BigInteger, nullable=True)  # nullable for now
+   # transaction_id = Column(BigInteger, nullable=True)  # nullable for now
 
     # Relationships
     user = relationship("User", back_populates='accounts')
-    transactions = relationship("Transaction", back_populates='accounts')
+    # transactions = relationship("Transaction", back_populates='accounts')
+
+    sent_transactions = relationship("Transaction", foreign_keys="[Transaction.sender_account_id]", back_populates="sender_account")
+    received_transactions = relationship("Transaction", foreign_keys="[Transaction.receiver_account_id]", back_populates="receiver_account")
+
 
 
 # Pydantic input model (only needed fields)
@@ -30,8 +34,8 @@ class AccountCreate(BaseModel):
     account_type: Literal["Saving", "Current", "Fixed Deposit"]
     account_status: Literal["Active", "Closed"]
     account_balance: float
-    # No user_id here: it should be taken from logged-in context
-    transaction_id: Optional[int] = None
+    user_id: int
+    #transaction_id: Optional[int] = None
 
 
 # Nested Pydantic model for user in output
@@ -52,7 +56,7 @@ class AccountOut(BaseModel):
     created_at: datetime
     closed_at: Optional[datetime]
     user: UserSummary                # nested user
-    transaction_id: Optional[int]
+   # transaction_id: Optional[int]
 
     class Config:
         from_attributes = True
