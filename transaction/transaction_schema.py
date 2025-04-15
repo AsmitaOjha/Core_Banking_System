@@ -4,6 +4,7 @@ from database import MySQLConnection
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, Literal
+from sqlalchemy import Index
 
 class Transaction(MySQLConnection.Base):
     __tablename__ = "transactions"
@@ -12,7 +13,18 @@ class Transaction(MySQLConnection.Base):
     transaction_type = Column(Enum("deposit", "withdraw", "transfer"), nullable=False)
     amount = Column(DECIMAL(10, 2), nullable=False)
     transaction_time = Column(DateTime, nullable=False, default=func.now())
-    remark = Column(String(255), nullable=False)  # match SQL NOT NULL
+   # remark = Column(String(255), nullable=False)  # match SQL NOT NULL
+    remark = Column(Enum(
+    "travel & ticketing",
+    "food",
+    "clz/school fee",
+    "recharge",
+    "rent",
+    "cloth and accessories",
+    "clothes",
+    "other",
+    name="remark_enum"
+    ), nullable=False)
     status = Column(Enum("Completed", "Failed", "Pending"), nullable=True)
 
     # Foreign Keys to accounts table
@@ -23,14 +35,22 @@ class Transaction(MySQLConnection.Base):
     sender_account = relationship("Account", foreign_keys=[sender_account_id])
     receiver_account = relationship("Account", foreign_keys=[receiver_account_id])
 
+    __table_args__ = (
+    Index('idx_sender_account', 'sender_account_id'),
+    Index('idx_receiver_account', 'receiver_account_id'),
+    Index('idx_transaction_type', 'transaction_type'),
+)
+
 # Pydantic Input Model
 class TransactionCreate(BaseModel):
     transaction_type: Literal["deposit", "withdraw", "transfer"]
     amount: float
     remark: str
-    status: Optional[Literal["Completed", "Failed", "Pending"]] = "Completed"
+   # status: Optional[Literal["Completed", "Failed", "Pending"]] = "Completed"
     sender_account_id: str
     receiver_account_id: Optional[str] = None
+
+    
 
 # Pydantic Output Model
 class TransactionOut(BaseModel):
@@ -39,7 +59,7 @@ class TransactionOut(BaseModel):
     amount: float
     transaction_time: datetime
     remark: str
-    status: Optional[str]
+    status: str
     sender_account_id: str
     receiver_account_id: Optional[str]
 

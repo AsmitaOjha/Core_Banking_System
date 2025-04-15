@@ -16,6 +16,14 @@ def generate_account_number(db: Session) -> str:
 
     return str(new_number)
 
+def view_account(db: Session, account_number: str):
+    account = db.query(Account).filter(Account.account_number == account_number).first()
+
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found.")
+
+    return account  # This returns Account SQLAlchemy model, which gets converted to AccountOut
+
 
 def create_account(db: Session, account_data: AccountCreate):
     # ✅ Step 1: Check if user exists
