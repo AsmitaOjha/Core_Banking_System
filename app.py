@@ -78,9 +78,9 @@ def register_form():
         try:
             res = requests.post(f"{BASE_URL}/user/register", json=payload)
             if res.status_code == 200 or res.status_code == 201:
-                st.success("Registration Successful! Please login.")
-                if st.button("Go to Login"):
-                    st.session_state.page = "login"
+                st.success("Registration Successful! Redirecting to login page...")
+                st.session_state.page = "login"
+                st.rerun()
             else:
                 st.error(res.json().get("detail", "Registration failed."))
         except Exception as e:
@@ -125,6 +125,7 @@ def login_form():
 
                 # Navigate to dashboard
                 st.session_state.page = "dashboard"
+                st.rerun()
 
             # Handle login error
             else:
