@@ -8,7 +8,7 @@ This project simulates the backend and dashboard of a **Core Banking System** fo
 
 ## 🚀 Features
 
-- 🔐 Secure User Registration & Authentication  
+- 🔐 Simple and secure User Registration & Authentication  
 - 💼 Account Creation and Balance Management  
 - 💸 Deposit, Withdraw, and Transfer Operations  
 - 📊 Streamlit Dashboard for Real-time Analytics  
@@ -59,10 +59,10 @@ Core_banking_System/
 │   ├── 20250410211847_create_users_table.sql
 │   └── <other_timestamped>.sql # Migration scripts
 └── venv/                        # Virtual environment
+
 ## ▶️ How to Run
 
 ### 1. Clone the Repository
-```bash
 https://github.com/AsmitaOjha/Core_Banking_System.git
 cd Core_banking_System
 
@@ -79,12 +79,11 @@ uvicorn main:app --reload
 ### 5. Run Streamlit dashboard
 streamlit run app.py
 
-📅 Date
-April 17, 2025
+**📅 Date**
+**April 17, 2025**
 
-👩‍💻 Author
-Asmita
-8th Semester Computer Science Student
-Task 2 – ExtensoData Internship
-
+## 👩‍💻 Author  
+**Asmita**  
+8th Semester Computer Science Student  
+**Task 2 – ExtensoData Internship**
 
