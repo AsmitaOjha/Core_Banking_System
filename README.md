@@ -31,6 +31,7 @@ This project simulates the backend and dashboard of a **Core Banking System** fo
 ---
 
 ## 📁 Project Structure
+```
 Core_banking_System/
 ├── .env                         # Environment variables
 ├── .gitignore                   # Git ignored files
@@ -59,6 +60,7 @@ Core_banking_System/
 │   ├── 20250410211847_create_users_table.sql
 │   └── <other_timestamped>.sql # Migration scripts
 └── venv/                        # Virtual environment
+```
 
 ## ▶️ How to Run
 
@@ -75,13 +77,19 @@ Core_banking_System/
 ```
 
 ### 3. Install Dependencies
+```
 pip install -r requirements.txt
+```
 
 ### 4. Run FASTAPI backend
+```
 uvicorn main:app --reload
+```
 
 ### 5. Run Streamlit dashboard
+```
 streamlit run app.py
+```
 
 **📅 Date**
 **April 17, 2025**
