@@ -75,7 +75,7 @@ def login_form():
     with st.form("login_form"):
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
-        submit = st.form_submit_button("Login", key="login submit")
+        submit = st.form_submit_button("Submit Login")
 
     if submit:
         payload = {"email": email, "password": password}
