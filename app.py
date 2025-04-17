@@ -75,7 +75,7 @@ def login_form():
     with st.form("login_form"):
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
-        submit = st.form_submit_button("Login")
+        submit = st.form_submit_button("Login", key="login submit")
 
     if submit:
         payload = {"email": email, "password": password}
@@ -185,21 +185,38 @@ def admin_dashboard():
         res = requests.get(f"{BASE_URL}/transactions/all")
         if res.status_code == 200:
             transactions = res.json()
-            txn_data = pd.DataFrame(transactions)
-            for txn in transactions:
-                with st.expander(f"Txn ID: {txn['id']} | {txn['transaction_type'].capitalize()} ₹{txn['amount']}"):
-                    st.write("🧾 Transaction Type:", txn["transaction_type"].capitalize())
-                    st.write("💰 Amount:", txn["amount"])
-                    st.write("📝 Remark:", txn.get("remark", "N/A"))
-                    st.write("📅 Timestamp:", txn["transaction_time"])
-                    st.write("📤 Sender Account ID:", txn["sender_account_id"])
-                    if txn["receiver_account_id"]:
-                        st.write("📥 Receiver Account ID:", txn["receiver_account_id"])
-                    st.write("📌 Status:", txn.get("status", "N/A"))
+            if transactions:
+                txn_data = pd.DataFrame(transactions)
+                txn_data = txn_data.rename(columns={
+                    "id": "Transaction ID",
+                    "transaction_type": "Transaction Type",
+                    "sender_account_id": "Sender Account",
+                    "receiver_account_id": "Receiver Account",
+                    "amount": "Amount",
+                    "remark": "Remark",
+                    "transaction_time": "Timestamp",
+                    "status": "Status"
+                })
+                st.dataframe(txn_data)
+
+                # st.markdown("### 📋 Detailed View")
+                # for txn in transactions:
+                #     with st.expander(f"Txn ID: {txn['id']} | {txn['transaction_type'].capitalize()} ₹{txn['amount']}"):
+                #         st.write("🧾 Transaction Type:", txn["transaction_type"].capitalize())
+                #         st.write("💰 Amount:", txn["amount"])
+                #         st.write("📝 Remark:", txn.get("remark", "N/A"))
+                #         st.write("📅 Timestamp:", txn["transaction_time"])
+                #         st.write("📤 Sender Account ID:", txn["sender_account_id"])
+                #         if txn["receiver_account_id"]:
+                #             st.write("📥 Receiver Account ID:", txn["receiver_account_id"])
+                #         st.write("📌 Status:", txn.get("status", "N/A"))
+            else:
+                st.info("No transactions found.")
         else:
             st.warning(res.json().get("detail", "Failed to fetch transactions."))
     except Exception as e:
         st.error(f"Error fetching transactions: {e}")
+
 
     # Section 4: Charts & Analytics
     st.subheader("📊 Admin Insights & Platform Analytics")     
@@ -483,11 +500,11 @@ def navigation_footer():
     st.markdown("----")
     col1,col2 = st.columns(2)
     with col1:
-        if st.button("Go to Register/Login Page"):
+        if st.button("Go to Register/Login Page", key="register_login_button"):
             st.session_state.page = "home"
             st.rerun()
     with col2:
-        if st.button("🏠Go to Dashboard"):
+        if st.button("🏠Go to Dashboard", key="back_to_dashboard_button"):
             user_data = st.session_state.get("user")
             if user_data.get("is_admin"):
                 st.session_state.page = "admin_dashboard"
