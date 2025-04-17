@@ -63,12 +63,16 @@ Core_banking_System/
 ## ▶️ How to Run
 
 ### 1. Clone the Repository
-https://github.com/AsmitaOjha/Core_Banking_System.git
-cd Core_banking_System
+```
+-https://github.com/AsmitaOjha/Core_Banking_System.git
+-cd Core_banking_System
+```
 
 ### 2. Create virtual environment
-python -m venv venv
-venv\Scripts\activate  (activate virtual envrionment)
+```
+-python -m venv venv
+-venv\Scripts\activate  (activate virtual envrionment)
+```
 
 ### 3. Install Dependencies
 pip install -r requirements.txt
