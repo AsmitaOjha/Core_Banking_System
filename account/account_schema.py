@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, DateTime, Enum, String, ForeignKey, DECIMAL, func
+from sqlalchemy import Column, BigInteger, DateTime, Enum, String, ForeignKey, DECIMAL, func, Integer
 from sqlalchemy.orm import relationship
 from database import MySQLConnection
 from datetime import datetime
@@ -9,6 +9,7 @@ from typing import Optional, Literal
 class Account(MySQLConnection.Base):
     __tablename__ = "accounts"
 
+    serial_number = Column(Integer, unique=True, autoincrement=True)
     account_number = Column(String(20), primary_key=True)
     account_type = Column(Enum("Saving", "Current", "Fixed Deposit"), nullable=False, default="Saving")
     account_status = Column(Enum("Active", "Closed"), nullable=False)
@@ -42,9 +43,11 @@ class AccountCreate(BaseModel):
 class UserSummary(BaseModel):
     id: int
     name: str
+    email: str
 
     class Config:
         from_attributes = True
+        # orm_mode = True
 
 
 # Output model with nested user
@@ -60,3 +63,4 @@ class AccountOut(BaseModel):
 
     class Config:
         from_attributes = True
+        # orm_mode = True

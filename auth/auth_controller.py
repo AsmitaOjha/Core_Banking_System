@@ -13,4 +13,4 @@ def login(login_data: LoginRequest):
     user = authenticate_user(login_data.email, login_data.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    return {"message": "Login successful", "user_id": user.id}
+    return {"message": "Login successful", "user_id": user.id, "is_admin": user.is_admin}

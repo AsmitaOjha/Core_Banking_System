@@ -45,7 +45,16 @@ class Transaction(MySQLConnection.Base):
 class TransactionCreate(BaseModel):
     transaction_type: Literal["deposit", "withdraw", "transfer"]
     amount: float
-    remark: str
+    remark: Literal[
+    "travel & ticketing",
+    "food",
+    "clz/school fee",
+    "recharge",
+    "rent",
+    "cloth and accessories",
+    "clothes",
+    "other",
+    ]
    # status: Optional[Literal["Completed", "Failed", "Pending"]] = "Completed"
     sender_account_id: str
     receiver_account_id: Optional[str] = None

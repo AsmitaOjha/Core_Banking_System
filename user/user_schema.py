@@ -1,8 +1,9 @@
-from sqlalchemy import Column, BigInteger, String, Date
+from sqlalchemy import Column, BigInteger, String, Date,Boolean
 from sqlalchemy.orm import relationship
 from database import MySQLConnection
 from pydantic import BaseModel, EmailStr
 from datetime import date
+from typing import Optional
 
 class User(MySQLConnection.Base):
     __tablename__ = 'users'
@@ -17,6 +18,7 @@ class User(MySQLConnection.Base):
     city = Column(String(255), nullable=False)
     state = Column(String(255), nullable=False)
     country = Column(String(255), nullable=False)
+    is_admin = Column(Boolean, nullable=False, default=False)
 
     # ✅ Match this with `back_populates="user"` in Account
     accounts = relationship("Account", back_populates='user')
@@ -31,6 +33,8 @@ class UserCreate(BaseModel):
     city: str
     state: str
     country: str
+    # is_admin: bool 
+    is_admin: Optional[bool] = False
 
 class UserOut(BaseModel):
     id: int
@@ -42,5 +46,6 @@ class UserOut(BaseModel):
     city: str
     state: str
     country: str
+    is_admin: bool
     class Config:
         from_attributes = True

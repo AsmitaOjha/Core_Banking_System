@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS accounts (
     closed_at DATETIME,
     user_id BIGINT NOT NULL,
     transaction_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
-
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    -- FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
 );

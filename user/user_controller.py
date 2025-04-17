@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from user.user_schema import UserCreate, UserOut
-from user.user_service import create_user, get_user_by_email
+from user.user_service import create_user, get_user_by_email, get_all_users
 from sqlalchemy.exc import IntegrityError
 from fastapi import status
 
@@ -40,3 +40,8 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
 def check_user_exists(email: str, db: Session = Depends(get_db)):
     user = get_user_by_email(db, email)
     return {"exists": bool(user)}
+
+@user_router.get("/all")
+def get_all_user(db: Session = Depends(get_db)):
+    users = get_all_users(db)
+    return users;

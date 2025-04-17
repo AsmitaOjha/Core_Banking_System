@@ -70,8 +70,6 @@ def get_monthly_transaction_trends(db: Session, account_number: str):
     
     return trends
 
-  
-
 def create_transaction(db: Session, transaction_data: TransactionCreate):
     # Initialize default status
     transaction_status = "Pending"
@@ -147,3 +145,27 @@ def create_transaction(db: Session, transaction_data: TransactionCreate):
         db.refresh(transaction)
 
         raise e  # Re-raise the original exception to maintain FastAPI's behavior
+
+def get_all_transactions(db: Session):
+    transactions = db.query(Transaction).all()
+    return transactions
+
+def get_transaction_by_id(db: Session, user_id: int):
+    user_account = db.query(Account).filter(Account.user_id == user_id).first()
+
+    if not user_account:
+        return {"error": "User account not found."}
+
+    account_no = user_account.account_number
+
+    transactions = db.query(Transaction).filter(
+        or_(
+            Transaction.sender_account_id == account_no,
+            Transaction.receiver_account_id == account_no
+        )
+    ).order_by(Transaction.transaction_time.desc()).all()
+
+    if not transactions:
+        raise HTTPException(status_code=404, detail="Transactions not found.")
+    
+    return transactions
